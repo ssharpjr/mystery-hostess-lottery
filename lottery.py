@@ -1,3 +1,4 @@
+#!/usr/bin/python3
 # -*- coding: utf-8 -*-
 '''
  lottery.py
@@ -7,7 +8,7 @@
 '''
 
 import sys
-from subprocess import call
+import os
 import random
 
 tickets = {}
@@ -15,13 +16,52 @@ ticket_holders = {}
 counter = 1
 
 
+def clearScreen():
+    os.system('cls' if os.name == 'nt' else 'clear')
+
+
 def pressAnyKey():
     input("Press any key to continue...")
+    clearScreen()
 
 
 def notReady():
     print("\nThis function is not ready yet.")
     pressAnyKey()
+
+
+def savePlayers():
+    saveFile = open('players.txt', 'w')
+    saveFile.write(str(ticket_holders))
+    saveFile.close()
+
+
+def loadPlayers():
+    pass
+
+
+def deletePlayers():
+    print("\nDelete all player tickets")
+    choice = input("Are you sure you want to delete all player tickets" +
+                   " (y/n)? ")
+    if choice == 'y':
+        try:
+            if os.stat('players.txt').st_size > 0:
+                os.remove('players.txt')
+                print("\nDone.")
+                pressAnyKey()
+                main()
+        except Exception:
+            print("\nNo tickets to delete.")
+            pressAnyKey()
+            main()
+    elif choice == 'n':
+        print("\n")
+        clearScreen()
+        main()
+    else:
+        clearScreen()
+        main()
 
 
 def addPlayer(counter):
@@ -30,10 +70,12 @@ def addPlayer(counter):
                      " or 'Q' to return to the Main: "
                      )
         if name == 'q':
+            clearScreen()
             main()
         name = name.title()
         entries = input("Enter %s's number of entries: " % name)
         ticket_holders[name] = int(entries)
+        savePlayers()
         print(name + " has " + entries + " tickets.")
         entries = int(entries)
         cEntries = counter + entries
@@ -48,6 +90,20 @@ def addPlayer(counter):
 
 
 def playerList():
+    try:
+        if os.stat('players.txt').st_size < 0:
+            print("\nThere are no existing players!\n")
+            pressAnyKey()
+            main()
+        else:
+            playerFile = open('players.txt', 'r')
+            ticket_holders = eval(playerFile.read())
+            playerFile.close()
+    except Exception:
+        print("\nThere are no existing players.\n")
+        pressAnyKey()
+        main()
+
     print("----------------------------------------")
     print("\nCurrent ticket holders:\n")
     for key, value in sorted(ticket_holders.items()):
@@ -79,7 +135,7 @@ def pullLottery():
 
 
 def exitProgram():
-    print("Goodbye")
+    print("\nGoodbye!\n")
     sys.exit()
 
 
@@ -91,6 +147,7 @@ def main():
     print("1. Enter a new player")
     print("2. View current ticket holders")
     print("3. Pull the lottery!")
+    print("D. Delete all ticket holders")
     print("Q. Exit the program\n")
     print("--------------------------------------------------")
     choice = input("\nChoose a menu option: ")
@@ -101,14 +158,17 @@ def main():
         playerList()
     elif choice == '3':
         pullLottery()
-    elif choice == 'q' or 'Q':
+    elif choice == 'd':
+        deletePlayers()
+    elif choice == 'q':
         exitProgram()
     else:
         print("Not a valid option")
+        pressAnyKey()
         main()
 
 
 # Run main
 if __name__ == '__main__':
-    call('clear')
+    clearScreen()
     main()
