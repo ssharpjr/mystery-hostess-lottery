@@ -7,6 +7,8 @@
 '''
 
 import sys
+from subprocess import call
+import random
 
 tickets = {}
 ticket_holders = {}
@@ -40,26 +42,39 @@ def addPlayer(counter):
             tickets[entry] = name
             counter += 1
 
-        # print(tickets)
-        # print(ticket_holders)
-        # print("\nTickets: " + str(entries))
-        # print("Counter: %s" % counter)
+        totalTickets = sum(ticket_holders.values())
+        print("\nTotal tickets: " + str(totalTickets))
+        print("Next ticket number: %s" % counter)
 
 
 def playerList():
-    print("\n")
-    print("Current ticket holders:")
+    print("----------------------------------------")
+    print("\nCurrent ticket holders:\n")
     for key, value in sorted(ticket_holders.items()):
-        print(key, ':', value)
+        print(key, '\t\t:', value)
 
     totalTickets = sum(ticket_holders.values())
-    print("Total tickets: " + str(totalTickets))
+    print("\nTotal tickets: " + str(totalTickets) + "\n")
+    print("----------------------------------------")
     pressAnyKey()
     main()
 
 
 def pullLottery():
-    notReady()
+    totalTickets = sum(ticket_holders.values())
+    winningTicket = random.randrange(1, totalTickets + 1)
+    winner = tickets[winningTicket]
+
+    print("----------------------------------------")
+    print("\nLottery Drawing\n")
+    print("The winning ticket number is: " + str(winningTicket))
+    print("\nThe winner is: " + winner.upper() + "!\n")
+    print(winner + " had " + str(ticket_holders[winner]) +
+          " tickets in this drawing."
+          )
+    print("Lottery pulled from " + str(totalTickets) + " tickets.\n")
+    print("----------------------------------------")
+    pressAnyKey()
     main()
 
 
@@ -70,12 +85,14 @@ def exitProgram():
 
 # Begin main
 def main():
+    print("--------------------------------------------------")
     print("\nWelcome to the Mystery Hostess Lottery Maker!")
     print("\nWhat would you like to do?")
     print("1. Enter a new player")
-    print("2. See the existing player list")
+    print("2. View current ticket holders")
     print("3. Pull the lottery!")
-    print("Q. Exit the program")
+    print("Q. Exit the program\n")
+    print("--------------------------------------------------")
     choice = input("\nChoose a menu option: ")
 
     if choice == '1':
@@ -93,4 +110,5 @@ def main():
 
 # Run main
 if __name__ == '__main__':
+    call('clear')
     main()
