@@ -1,2 +1,6 @@
 *.csv
 *.ods
+*.sublime-project
+*.sublime-workspace
+
+data
