@@ -13,20 +13,26 @@ ticket_holders = {}
 counter = 1
 
 
+def pressAnyKey():
+    input("Press any key to continue...")
+
+
 def notReady():
     print("\nThis function is not ready yet.")
-    input("Press any key to continue...")
+    pressAnyKey()
 
 
 def addPlayer(counter):
     while True:
-        name = input("\nEnter the new player's name or 'Q' to quit: ")
+        name = input("\nEnter the new player's name" +
+                     " or 'Q' to return to the Main: "
+                     )
         if name == 'q':
             main()
         name = name.title()
         entries = input("Enter %s's number of entries: " % name)
-        ticket_holders[name] = entries
-        print(name + " has " + entries + " tickets.\n")
+        ticket_holders[name] = int(entries)
+        print(name + " has " + entries + " tickets.")
         entries = int(entries)
         cEntries = counter + entries
 
@@ -34,14 +40,21 @@ def addPlayer(counter):
             tickets[entry] = name
             counter += 1
 
-        print(tickets)
-        print(ticket_holders)
-        print("\nTickets: " + str(entries))
-        print("Counter: %s" % counter)
+        # print(tickets)
+        # print(ticket_holders)
+        # print("\nTickets: " + str(entries))
+        # print("Counter: %s" % counter)
 
 
 def playerList():
-    notReady()
+    print("\n")
+    print("Current ticket holders:")
+    for key, value in sorted(ticket_holders.items()):
+        print(key, ':', value)
+
+    totalTickets = sum(ticket_holders.values())
+    print("Total tickets: " + str(totalTickets))
+    pressAnyKey()
     main()
 
 
